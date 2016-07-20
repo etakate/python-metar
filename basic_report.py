@@ -1,11 +1,15 @@
 #!/usr/bin/python
-#
-import os
-import sys
+
+import csv
 import getopt
-import string
-import urllib
 from metar import Metar
+import numpy as np
+import os
+import string
+import sys
+import urllib
+
+csv.register_dialect('space', delimiter=' ', escapechar='\n', quoting=csv.QUOTE_NONE)
 
 BASE_URL = "http://weather.noaa.gov/pub/data/observations/metar/stations"
 
@@ -42,12 +46,16 @@ for name in stations:
       if line.startswith(name):
         report = line.strip()
         print report
+        with open(name+'.txt', 'a') as f:
+            f.write(report + '\n')
         break
+
     if not report:
       print "No data for ",name,"\n\n"
   except Metar.ParserError, err:
     print "METAR code: ",line
     print string.join(err.args,", "),"\n"
-  except:
-    print "Error retrieving",name,"data","\n"
+  except Exception as e:
+    print str(e)
+#    print "Error retrieving",name,"data","\n"
  
