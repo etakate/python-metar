@@ -1,3 +1,9 @@
+// For use inside of Google Sheets (Google Sheet >> Tools >> Script editor)
+// Function to collect METAR string and append line (as new row) to specific worksheet
+
+//// Note: It's possible to assign 'trigger(s)' to this script (eg, run every hour) via
+//// Script editor >> Resources >> 'All your triggers'
+
 // Removes whitespace from string(s)
 if(typeof(String.prototype.trim) === "undefined")
 {
@@ -7,11 +13,8 @@ if(typeof(String.prototype.trim) === "undefined")
     };
 }
 
-
-// Function to collect METAR string and append line (as new row) to Google Sheet
 function metar() 
 {
-
   // Enter 4-letter airport code in currentStation string
   var currentStation = ''
   var dt = new Date();
@@ -26,6 +29,5 @@ function metar()
   var url = 'http://weather.noaa.gov/pub/data/observations/metar/stations/' + currentStation + '.TXT';
   var report = UrlFetchApp.fetch(url).getContentText();
   sheet.appendRow([utcDate, report.trim()]);
-
 }
 
