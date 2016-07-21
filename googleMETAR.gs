@@ -1,5 +1,4 @@
 // Removes whitespace from string(s)
-
 if(typeof(String.prototype.trim) === "undefined")
 {
     String.prototype.trim = function() 
@@ -10,7 +9,6 @@ if(typeof(String.prototype.trim) === "undefined")
 
 
 // Function to collect METAR string and append line (as new row) to Google Sheet
-
 function metar() 
 {
 
@@ -28,5 +26,6 @@ function metar()
   var url = 'http://weather.noaa.gov/pub/data/observations/metar/stations/' + currentStation + '.TXT';
   var report = UrlFetchApp.fetch(url).getContentText();
   sheet.appendRow([utcDate, report.trim()]);
+
 }
 
