@@ -4,14 +4,22 @@
 //// Note: It's possible to assign 'trigger(s)' to this script (eg, run every hour) via
 //// Script editor >> Resources >> 'All your triggers'
 
-// Removes whitespace from string(s)
-if(typeof(String.prototype.trim) === "undefined")
+//// Note: As of June 2016, the weather.noaa.gov site has been discontinued.
+//// See http://aviationweather.gov/dataserver for updates/new schema.
+
+
+function parseXml(currentStation) 
 {
-    String.prototype.trim = function() 
-    {
-      return String(this).replace(/^\s+|\s+$/g, '');
-    };
+  var url = 'http://aviationweather.gov/adds/dataserver_current/httpparam?datasource=metars&requestType=retrieve&format=xml&mostRecentForEachStation=constraint&hoursBeforeNow=1.25&stationString=' + currentStation
+  var xml = UrlFetchApp.fetch(url).getContentText();
+  var document = XmlService.parse(xml);
+  var root = document.getRootElement();
+  var atom = XmlService.getNamespace('http://www.w3.org/2005/Atom');
+
+  var report = root.getChild('data').getChild('METAR').getChild('raw_text').getText();
+  return report
 }
+
 
 function metar() 
 {
@@ -26,8 +34,5 @@ function metar()
 //  var ss = SpreadsheetApp.openByUrl("");
   var sheet = ss.getSheets()[0];
   
-  var url = 'http://weather.noaa.gov/pub/data/observations/metar/stations/' + currentStation + '.TXT';
-  var report = UrlFetchApp.fetch(url).getContentText();
-  sheet.appendRow([utcDate, report.trim()]);
+  sheet.appendRow([utcDate, parseXml(currentStation)]);
 }
-
