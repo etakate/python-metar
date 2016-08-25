@@ -14,9 +14,24 @@ function parseXml(currentStation)
   var document = XmlService.parse(xml);
   var root = document.getRootElement();
 
-  var reportTime = root.getChild('data').getChild('METAR').getChild('observation_time').getText();
-  var reportInfo = root.getChild('data').getChild('METAR').getChild('raw_text').getText();
-  var report = reportTime + '\n' + reportInfo
+  if(root==null || root===false)
+  {
+  report = 'METAR PAGE NOT AVAILABLE';
+  }
+  else
+  {
+    var metar = root.getChild('data').getChild('METAR').getText();
+    if(metar==null || metar===false)
+    {
+    report = 'NO METAR DATA AVAILABLE';
+    }
+    else
+    {
+    var reportTime = root.getChild('data').getChild('METAR').getChild('observation_time').getText();
+    var reportInfo = root.getChild('data').getChild('METAR').getChild('raw_text').getText();
+    report = reportTime + '\n' + reportInfo
+    }
+  }
   return report
 }
 
